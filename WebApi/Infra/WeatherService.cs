@@ -23,11 +23,11 @@ public sealed class WeatherService
         "Scorching"
     };
 
-    public ImmutableArray<WeatherForecast> ForeCast { get; private set; }
+    public ImmutableArray<WeatherForecast> Forecast { get; private set; }
 
     public WeatherService()
     {
-        ForeCast = Enumerable.Range(1, 25).Select(index =>
+        Forecast = Enumerable.Range(1, 25).Select(index =>
             new WeatherForecast
             (
                 Date: DateTime.Now.AddDays(index),
@@ -35,19 +35,5 @@ public sealed class WeatherService
                 Summary: Summaries[Random.Shared.Next(Summaries.Length)]
             ))
             .ToImmutableArray();
-    }
-
-    public IEnumerable<WeatherForecast> Filter(string? term)
-    {
-        if (string.IsNullOrEmpty(term))
-        {
-            return ForeCast;
-        }
-            
-        return ForeCast
-            .Where(x => x.Summary.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-                        x.TemperatureC.ToString().Contains(term) ||
-                        x.Date.ToString().Contains(term))
-            .ToList();
     }
 }

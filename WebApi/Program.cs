@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApi.Commands;
@@ -9,20 +10,31 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TodoDatabaseContext>(opt => opt.UseInMemoryDatabase("TodoList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
+app.UseCors("CorsPolicy");
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
-app.MapGet("/weather-forecast", ([FromQuery] string? term, WeatherService service) => service.Filter(term));
 
-app.MapGet("/todo-items", async ([FromServices] TodoDatabaseContext context, [FromQuery] bool isComplete) =>
+app.MapGet("/api/weather-forecasts", (WeatherService weatherService) => weatherService.Forecast);
+
+app.MapGet("/api/todo-items", async ([FromServices] TodoDatabaseContext context, [FromQuery] bool isComplete) =>
 {
     return await context.Todos.Where(t => t.IsComplete == isComplete).ToListAsync();
 });
 
-app.MapGet("/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContext context) =>
+app.MapGet("/api/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContext context) =>
 {
     if (await context.Todos.FindAsync(id) is Todo todo)
     {
@@ -31,7 +43,7 @@ app.MapGet("/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContex
     return Results.NotFound();
 });
 
-app.MapPost("/todo-items", async (CreateTodoCommand createTodoCommand, [FromServices] TodoDatabaseContext context) =>
+app.MapPost("/api/todo-items", async (CreateTodoCommand createTodoCommand, [FromServices] TodoDatabaseContext context) =>
 {
     var todo = new Todo(createTodoCommand.Name);
     context.Todos.Add(todo);
@@ -40,7 +52,7 @@ app.MapPost("/todo-items", async (CreateTodoCommand createTodoCommand, [FromServ
     return Results.Created($"/todo-items/{todo.Id}", todo);
 });
 
-app.MapPut("/todo-items/{id}", async (Guid id, [FromBody] UpdateTodoCommand updateTodoCommand, [FromServices] TodoDatabaseContext context) =>
+app.MapPut("/api/todo-items/{id}", async (Guid id, [FromBody] UpdateTodoCommand updateTodoCommand, [FromServices] TodoDatabaseContext context) =>
 {
     var todo = await context.Todos.FindAsync(id);
 
@@ -52,7 +64,7 @@ app.MapPut("/todo-items/{id}", async (Guid id, [FromBody] UpdateTodoCommand upda
     return Results.NoContent();
 });
 
-app.MapPost("/todo-items/{id}:toggle", async (Guid id, [FromServices] TodoDatabaseContext context) =>
+app.MapPost("/api/todo-items/{id}:toggle", async (Guid id, [FromServices] TodoDatabaseContext context) =>
 {
     var todo = await context.Todos.FindAsync(id);
 
@@ -64,7 +76,7 @@ app.MapPost("/todo-items/{id}:toggle", async (Guid id, [FromServices] TodoDataba
     return Results.NoContent();
 });
 
-app.MapDelete("/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContext context) =>
+app.MapDelete("/api/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContext context) =>
 {
     if (await context.Todos.FindAsync(id) is Todo todo)
     {
