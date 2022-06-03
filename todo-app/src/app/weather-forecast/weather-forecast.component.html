@@ -1,0 +1,37 @@
+<div nz-row>
+    <div nz-col nzSpan="24">
+        <form nzLayout="vertical" nz-form [formGroup]="searchForm">
+            <nz-form-item>
+                <nz-input-group [nzSuffix]="suffixIconSearch">
+                    <input type="text" nz-input placeholder="Type to filter weather forecasts" formControlName="searchInput"/>
+                </nz-input-group>
+                <ng-template #suffixIconSearch>
+                    <i nz-icon nzType="search"></i>
+                </ng-template>
+            </nz-form-item>
+        </form>
+    </div>
+</div>
+
+<div nz-row class="weather-list">
+    <div nz-col nzSpan="24">
+        <nz-table #table [nzData]="weatherForecasts" [nzLoading]="loading">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Summary</th>
+                <th>Temperature Cº</th>
+                <th>Temperature Fº</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let data of table.data">
+                <td>{{data.date | date: 'longDate' }}</td>
+                <td>{{data.summary}}</td>
+                <td>{{ data.temperatureC | degreeEmoji }} {{data.temperatureC}} Cº</td>
+                <td>{{data.temperatureF}} Fº</td>
+              </tr>
+            </tbody>
+          </nz-table>
+    </div>
+</div>
