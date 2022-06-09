@@ -29,8 +29,13 @@ app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.MapGet("/api/weather-forecasts", (WeatherService weatherService) => weatherService.Forecast);
 
-app.MapGet("/api/todo-items", async ([FromServices] TodoDatabaseContext context, [FromQuery] bool isComplete) =>
+app.MapGet("/api/todo-items", async ([FromServices] TodoDatabaseContext context, [FromQuery] bool? isComplete) =>
 {
+    if (isComplete is null)
+    {
+        return await context.Todos.ToListAsync();
+    }
+
     return await context.Todos.Where(t => t.IsComplete == isComplete).ToListAsync();
 });
 
@@ -61,7 +66,7 @@ app.MapPut("/api/todo-items/{id}", async (Guid id, [FromBody] UpdateTodoCommand 
     todo.ChangeName(updateTodoCommand.Name);
     await context.SaveChangesAsync();
 
-    return Results.NoContent();
+    return Results.Ok(todo);
 });
 
 app.MapPost("/api/todo-items/{id}:toggle", async (Guid id, [FromServices] TodoDatabaseContext context) =>
@@ -73,7 +78,7 @@ app.MapPost("/api/todo-items/{id}:toggle", async (Guid id, [FromServices] TodoDa
     todo.ToggleStatus();
     await context.SaveChangesAsync();
 
-    return Results.NoContent();
+    return Results.Ok(todo);
 });
 
 app.MapDelete("/api/todo-items/{id}", async (Guid id, [FromServices] TodoDatabaseContext context) =>

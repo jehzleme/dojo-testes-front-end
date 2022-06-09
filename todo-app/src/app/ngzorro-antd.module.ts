@@ -8,6 +8,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @NgModule({
   exports: [
@@ -23,7 +24,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzIconModule,
     NzInputModule,
     NzCheckboxModule,
-    NzTableModule
+    NzTableModule,
+    NzButtonModule
   ]
 })
 export class NgZorroAntDModule { }

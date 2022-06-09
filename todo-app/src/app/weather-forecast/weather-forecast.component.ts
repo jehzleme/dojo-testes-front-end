@@ -25,9 +25,9 @@ export class WeatherForecastComponent implements OnInit {
     this.weatherForecastService
       .getWeatherForecasts()
       .pipe(finalize(() => this.loading = false))
-      .subscribe(result => {
-        this._weatherForecasts = result;
-        this.weatherForecasts = result;
+      .subscribe(weatherForecasts => {
+        this._weatherForecasts = weatherForecasts;
+        this.weatherForecasts = weatherForecasts;
       });
 
     this.searchForm.controls.searchInput.valueChanges
