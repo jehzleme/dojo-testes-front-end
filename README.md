@@ -24,6 +24,7 @@ Deverá ser exibido uma documentação do Swagger.
 **Front-end**
 ```shell
 cd todo-app
+npm install
 npm start
 ```
 
