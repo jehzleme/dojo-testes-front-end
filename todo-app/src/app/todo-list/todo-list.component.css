@@ -1,0 +1,13 @@
+.todo-list {
+  margin: 16px 0;
+}
+
+.todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.completed-todo {
+    text-decoration: line-through;
+}

@@ -1,0 +1,31 @@
+<nz-layout>
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null">
+    <div class="logo"></div>
+    <ul nz-menu nzTheme="dark" nzMode="inline">
+      <li nz-menu-item routerLink="/weather-forecast">
+        <i nz-icon nzType="ant-cloud" nzTheme="outline"></i>
+        <span>Weather Forecast</span>
+      </li>
+      <li nz-menu-item routerLink="/todo-list">
+        <i nz-icon nzType="unordered-list" nzTheme="outline"></i>
+        <span>To do List</span>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header>
+      <i
+        class="trigger"
+        nz-icon
+        [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+        (click)="isCollapsed = !isCollapsed"
+      ></i>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+    <nz-footer>Treinamento testes front-end @2022</nz-footer>
+  </nz-layout>
+</nz-layout>

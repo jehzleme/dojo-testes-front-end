@@ -1,0 +1,44 @@
+<div nz-row>
+    <div nz-col nzSpan="24">
+        <form nzLayout="vertical" nz-form [formGroup]="todoForm">
+            <nz-form-item>
+                <nz-form-control [nzSpan]="null" nzErrorTip="It should have at least 3 characters">
+                  <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                      <input
+                        nz-input
+                        placeholder="What do you need to do?"
+                        formControlName="name" />
+                    </nz-input-group>
+                    <ng-template #suffixIconButton>
+                      <button nz-button nzType="primary" nzSearch (click)="registerTodo()"><i nz-icon nzType="plus"></i></button>
+                    </ng-template>
+                </nz-form-control>
+            </nz-form-item>
+        </form>
+    </div>
+</div>
+
+<div nz-row class="todo-list">
+    <div nz-col nzSpan="24">
+      <nz-list nzBordered [nzHeader]="todoHeader" [nzLoading]="loading">
+        <nz-list-item *ngFor="let todo of todos">          
+          <label nz-checkbox [ngModel]="todo.isComplete" [class.completed-todo]="todo.isComplete" (ngModelChange)="onToggleTodo($event, todo)">
+            {{ todo.name }}
+          </label>
+          <ul nz-list-item-actions>
+            <nz-list-item-action><a (click)="onEdit(todo)">edit</a></nz-list-item-action>
+            <nz-list-item-action><a (click)="onRemove(todo)">remove</a></nz-list-item-action>
+          </ul>
+        </nz-list-item>
+      </nz-list>
+
+      <ng-template #todoHeader>
+        <div class="todo-header">
+          <strong>To do</strong>
+          <label nz-checkbox [(ngModel)]="hideCompleted">
+            Hide completed
+          </label>
+        </div>
+      </ng-template>
+    </div>
+</div>
